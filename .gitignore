@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+.venv/
+venv/
+
+# Node
+node_modules/
+.pnpm-store/
+
+# Environment
+.env
+.env.local
+*.local
+
+# Docker
+docker/data/
+docker/ollama/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# OpenClaw runtime
+.openclaw/
+openclaw.json
+
+# Open WebUI data
+data/
+
+# Local models
+models/
