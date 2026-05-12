@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# 拉取推荐模型到 Ollama 容器
+# 用途：把推荐的本地模型拉取到 Ollama 容器。
+# 默认拉取轻量可运行模型；传入 light/full 可选择不同模型集合。
+# 适合新机器初始化或补齐 embedding/LLM 模型时使用。
 set -euo pipefail
 
 OLLAMA_CTR="${OLLAMA_CTR:-agent-ollama}"

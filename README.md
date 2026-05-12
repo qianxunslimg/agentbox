@@ -16,15 +16,16 @@ bash scripts/start.sh up
 #   Chat UI:  http://localhost:3000    （聊天、RAG 文档问答）
 #   Agent:    http://localhost:8080    （无代码创建自主 Agent）
 #   Team OS:  http://localhost:4082    （多 Agent 协作）
+#   OpenClaw: http://localhost:18789   （聊天渠道网关、微信接入）
 ```
 
 ## 项目结构
 
 ```
 agent/
+├── docker-compose.yml       # 主服务编排
 ├── docker/
-│   ├── docker-compose.yml   # 主服务编排
-│   └── .env.example
+│   └── volumes/             # Docker 运行数据
 ├── frameworks/              # Git submodules（源码参考）
 │   ├── openclaw/            # 通用 AI 助手（371k stars）
 │   ├── openclaw-cn/         # 中文社区版
@@ -33,7 +34,7 @@ agent/
 │   ├── localagi/            # 无代码 Agent 平台
 │   ├── openagentd/          # 多 Agent 协作 OS
 │   └── open-webui/          # 自托管聊天前端
-├── configs/                 # 配置文件示例
+├── configs/                 # 各服务配置和 .env.example
 ├── scripts/                 # 管理脚本
 ├── docs/                    # 使用文档
 └── archive/                 # 历史代码
@@ -46,6 +47,7 @@ agent/
 | **Open WebUI** | http://localhost:3000 | 聊天前端、RAG 文档问答、Web 搜索、多模型切换 |
 | **LocalAGI** | http://localhost:8080 | 无代码 Agent 构建器，创建自主执行任务的 Agent |
 | **OpenAgentd** | http://localhost:4082 | 多 Agent 协作、持久记忆、任务调度 |
+| **OpenClaw** | http://localhost:18789 | 多聊天渠道网关，支持微信接入 |
 
 ## 常用操作
 
@@ -56,6 +58,7 @@ bash scripts/start.sh agent       # 启动 LocalAGI + OpenAgentd
 bash scripts/start.sh down        # 停止全部
 bash scripts/start.sh logs webui  # 查看日志（也支持 localagi/openagentd）
 bash scripts/start.sh restart     # 重启
+bash scripts/start-openclaw.sh     # 只启动 OpenClaw
 
 # 拉取更多模型
 bash scripts/pull-models.sh       # 默认（7B）
@@ -79,3 +82,7 @@ bash scripts/start-dulus.sh
 ## 模型推荐
 
 参见 [docs/models.md](docs/models.md)
+
+## OpenClaw
+
+微信接入、DeepSeek 配置、控制台登录和换机器迁移，参见 [docs/openclaw.md](docs/openclaw.md)。

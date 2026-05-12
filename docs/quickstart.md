@@ -16,7 +16,7 @@ bash scripts/start.sh up
 bash scripts/pull-models.sh
 ```
 
-模型数据存在项目内的 `docker/volumes/ollama/`，不依赖宿主机路径。
+模型数据存在项目内的 `runtime/volumes/ollama/`，不依赖宿主机路径。
 
 ## 3. 浏览器打开
 
@@ -25,6 +25,7 @@ bash scripts/pull-models.sh
 | http://localhost:3000 | Open WebUI — 聊天、RAG 文档问答 |
 | http://localhost:8080 | LocalAGI — 无代码 Agent 构建器 |
 | http://localhost:4082 | OpenAgentd — 多 Agent 协作 OS |
+| http://localhost:18789 | OpenClaw — 聊天渠道网关、微信接入 |
 
 ## 命令行对话
 
@@ -49,6 +50,18 @@ bash scripts/start-dulus.sh /path/to/your/project
 ```
 
 两个都是 `docker compose run` 启动，挂载工作目录，`Ctrl+C` 退出不留容器。
+
+## OpenClaw / 微信
+
+```bash
+# 只启动 OpenClaw
+bash scripts/start-openclaw.sh
+
+# 微信扫码登录
+docker exec -it agent-openclaw sh -lc 'node /app/openclaw.mjs channels login --channel openclaw-weixin'
+```
+
+详见 [docs/openclaw.md](openclaw.md)。
 
 ## 服务管理
 

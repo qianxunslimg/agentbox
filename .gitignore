@@ -15,8 +15,16 @@ node_modules/
 .env.local
 *.local
 configs/dulus/config.yaml
+configs/openclaw/npm/
+configs/openclaw/extensions/
+configs/openclaw/plugin-skills/
+configs/openclaw/*.bak
+configs/openclaw/*.bak.*
+configs/openclaw/*.last-good
+configs/openclaw/weixin-recipients.json
 
-# Docker runtime volumes (databases, state, cache)
+# Runtime volumes, plugin installs, databases, state, cache
+runtime/
 docker/volumes/
 
 # IDE

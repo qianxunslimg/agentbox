@@ -1,24 +1,118 @@
 {
-  "models": {
-    "default": "ollama/qwen2.5-coder:14b",
-    "fast": "ollama/qwen2.5:1.5b",
-    "reasoning": "ollama/deepseek-r1:14b"
-  },
-  "channels": {
-    "telegram": {
-      "enabled": false,
-      "bot_token": "YOUR_TELEGRAM_BOT_TOKEN"
-    },
-    "discord": {
-      "enabled": false,
-      "bot_token": "YOUR_DISCORD_BOT_TOKEN"
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "deepseek/deepseek-v4-flash"
+      },
+      "models": {
+        "deepseek/deepseek-v4-flash": {
+          "streaming": false
+        },
+        "deepseek/deepseek-v4-pro": {
+          "streaming": false
+        }
+      },
+      "experimental": {
+        "localModelLean": true
+      }
     }
   },
-  "skills": {
-    "auto_load": ["coding", "shell", "web-search", "file-management"]
+  "plugins": {
+    "entries": {
+      "openclaw-weixin": {
+        "enabled": true
+      },
+      "deepseek": {
+        "enabled": true
+      },
+      "searxng": {
+        "enabled": true,
+        "config": {
+          "webSearch": {
+            "baseUrl": "http://searxng:8080",
+            "categories": "general,news",
+            "language": "zh-CN"
+          }
+        }
+      },
+      "memory-lancedb": {
+        "enabled": true,
+        "hooks": {
+          "allowConversationAccess": true
+        },
+        "config": {
+          "embedding": {
+            "provider": "ollama",
+            "baseUrl": "http://ollama:11434",
+            "model": "nomic-embed-text",
+            "dimensions": 768
+          },
+          "recallMaxChars": 800,
+          "captureMaxChars": 500,
+          "autoRecall": true,
+          "autoCapture": false
+        }
+      },
+      "lobster": {
+        "enabled": true
+      },
+      "douyin-insights-openclaw-plugin": {
+        "enabled": true,
+        "config": {
+          "apiKeyEnv": "SOCIAL_MEDIA_MCP_API_KEY",
+          "endpointUrl": "https://mcp.52choujiang.com/douyin/mcp",
+          "connectionTimeoutMs": 30000
+        }
+      },
+      "email": {
+        "enabled": true,
+        "config": {
+          "imap": {
+            "host": "imap.qq.com",
+            "port": 993,
+            "secure": true,
+            "username": "${QQ_EMAIL_ADDRESS}",
+            "password": "${QQ_EMAIL_AUTH_CODE}"
+          },
+          "smtp": {
+            "host": "smtp.qq.com",
+            "port": 465,
+            "secure": true,
+            "username": "${QQ_EMAIL_ADDRESS}",
+            "password": "${QQ_EMAIL_AUTH_CODE}",
+            "from": "${QQ_EMAIL_ADDRESS}",
+            "name": "OpenClaw"
+          },
+          "defaultMailbox": "INBOX",
+          "defaultSearchLimit": 10,
+          "defaultSearchWindow": 100,
+          "requireExplicitSendConfirmation": true
+        }
+      }
+    },
+    "slots": {
+      "memory": "memory-lancedb"
+    }
   },
-  "memory": {
-    "backend": "local",
-    "path": "~/.openclaw/memory"
+  "tools": {
+    "profile": "full",
+    "deny": [
+      "sessions_send"
+    ],
+    "web": {
+      "search": {
+        "provider": "searxng",
+        "maxResults": 5,
+        "timeoutSeconds": 30
+      }
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "bind": "lan",
+    "mode": "local"
+  },
+  "session": {
+    "dmScope": "per-account-channel-peer"
   }
 }

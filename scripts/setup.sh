@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# 用途：初始化本机开发/运行环境。
+# 检查并尽量安装 Ollama、Python、Node.js 等基础依赖，然后准备项目所需环境。
+# 适合第一次在新机器上配置这个 agent 项目时运行。
 set -euo pipefail
 
 echo "========================================="
@@ -63,6 +66,6 @@ echo "[+] Setup complete! Run the following to pull models:"
 echo "    bash scripts/pull-models.sh"
 echo ""
 echo "[+] Quick start:"
-echo "    docker compose -f docker/docker-compose.yml up -d    # Open WebUI"
+echo "    docker compose -f docker-compose.yml up -d           # Open WebUI"
 echo "    cd frameworks/dulus && pip install -e . && dulus      # Dulus Agent"
 echo "    cd frameworks/aider && pip install -e . && aider      # Aider coding"

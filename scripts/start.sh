@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
+# 用途：统一启动/停止这个项目里的 Docker 服务。
+# 支持启动完整服务栈，也支持单独启动 open-webui、localagi、openagentd 等服务。
+# 适合日常管理非 OpenClaw 专属的整体 agent 平台。
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-COMPOSE_FILE="$PROJECT_DIR/docker/docker-compose.yml"
+COMPOSE_FILE="$PROJECT_DIR/docker-compose.yml"
 
 compose() {
     docker compose -f "$COMPOSE_FILE" "$@"
@@ -23,20 +26,20 @@ case "${1:-up}" in
         echo "[+] Starting Open WebUI + LocalAGI + OpenAgentd..."
         compose --profile full up -d
         echo ""
-        echo "[✓] Open WebUI: http://localhost:${WEBUI_PORT:-3000}"
-        echo "[✓] LocalAGI:   http://localhost:${LOCALAGI_PORT:-8080}"
-        echo "[✓] OpenAgentd: http://localhost:${OPENAGENTD_PORT:-4082}"
+        echo "[✓] Open WebUI: http://localhost:3000"
+        echo "[✓] LocalAGI:   http://localhost:8080"
+        echo "[✓] OpenAgentd: http://localhost:4082"
         ;;
     webui)
         echo "[+] Starting Open WebUI..."
         compose up -d open-webui
-        echo "[✓] Open WebUI: http://localhost:${WEBUI_PORT:-3000}"
+        echo "[✓] Open WebUI: http://localhost:3000"
         ;;
     agent)
         echo "[+] Starting LocalAGI + OpenAgentd..."
         compose --profile agent up -d localagi openagentd
-        echo "[✓] LocalAGI:   http://localhost:${LOCALAGI_PORT:-8080}"
-        echo "[✓] OpenAgentd: http://localhost:${OPENAGENTD_PORT:-4082}"
+        echo "[✓] LocalAGI:   http://localhost:8080"
+        echo "[✓] OpenAgentd: http://localhost:4082"
         ;;
     full)
         compose --profile full up -d --build

@@ -5,7 +5,7 @@ Ollama 已容器化，通过 Docker Compose 管理。
 ## 启动
 
 ```bash
-docker compose -f docker/docker-compose.yml up -d ollama
+docker compose -f docker-compose.yml up -d ollama
 ```
 
 已集成在 `bash scripts/start.sh up` 中，无需单独启动。

@@ -1,0 +1,33 @@
+{
+  "default": "owner",
+  "recipients": [
+    {
+      "alias": "owner",
+      "label": "My Weixin",
+      "channel": "openclaw-weixin",
+      "accountId": "replace-with-openclaw-weixin-account-id",
+      "to": "replace-with-user-id@im.wechat",
+      "role": "admin",
+      "aliases": [
+        "main",
+        "me"
+      ],
+      "enabled": true,
+      "notes": "This must be a Weixin user that has an active iLink bot context."
+    },
+    {
+      "alias": "owner_2",
+      "label": "Another Weixin",
+      "channel": "openclaw-weixin",
+      "accountId": "replace-with-second-openclaw-weixin-account-id",
+      "to": "replace-with-second-user-id@im.wechat",
+      "role": "user",
+      "aliases": [
+        "nickname",
+        "family name"
+      ],
+      "enabled": true,
+      "notes": "Optional second recipient."
+    }
+  ]
+}

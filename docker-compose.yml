@@ -1,0 +1,121 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: agent-ollama
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ./runtime/volumes/ollama:/root/.ollama
+    env_file:
+      - ./configs/ollama/.env
+    restart: unless-stopped
+    # GPU: uncomment when NVIDIA drivers/runtime are available.
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: agent-webui
+    ports:
+      - "127.0.0.1:3000:8080"
+    volumes:
+      - ./runtime/volumes/webui:/app/backend/data
+    env_file:
+      - ./configs/open-webui/.env
+    restart: unless-stopped
+
+  searxng:
+    image: searxng/searxng:latest
+    container_name: agent-searxng
+    ports:
+      - "127.0.0.1:8888:8080"
+    volumes:
+      - ./configs/openclaw/searxng:/etc/searxng:ro
+    restart: unless-stopped
+    profiles:
+      - full
+
+  localagi:
+    image: quay.io/mudler/localagi:master
+    container_name: agent-localagi
+    ports:
+      - "127.0.0.1:8080:3000"
+    volumes:
+      - ./runtime/volumes/localagi:/pool
+    env_file:
+      - ./configs/localagi/.env
+    restart: unless-stopped
+    profiles:
+      - full
+      - agent
+
+  openagentd:
+    build:
+      context: ./frameworks/openagentd
+      dockerfile: Dockerfile
+    container_name: agent-openagentd
+    ports:
+      - "127.0.0.1:4082:4082"
+    volumes:
+      - ./runtime/volumes/openagentd:/data
+      - ./configs/openagentd:/data/config
+    env_file:
+      - ./configs/openagentd/.env
+    restart: unless-stopped
+    profiles:
+      - full
+      - agent
+
+  aider:
+    build:
+      context: ./frameworks/aider
+      dockerfile_inline: |
+        FROM python:3.12-slim
+        WORKDIR /app
+        COPY . .
+        RUN SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+docker pip install --no-cache-dir -e .
+        ENTRYPOINT ["aider"]
+    image: agentbox/aider:local
+    stdin_open: true
+    tty: true
+    profiles:
+      - cli
+
+  dulus:
+    build:
+      context: ./frameworks/dulus
+      dockerfile_inline: |
+        FROM python:3.12-slim
+        WORKDIR /app
+        COPY . .
+        RUN SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+docker pip install --no-cache-dir -e .
+        ENTRYPOINT ["dulus"]
+    image: agentbox/dulus:local
+    stdin_open: true
+    tty: true
+    profiles:
+      - cli
+
+  openclaw:
+    image: ghcr.io/openclaw/openclaw:2026.5.7
+    container_name: agent-openclaw
+    ports:
+      - "127.0.0.1:18789:18789"
+    volumes:
+      - ./runtime/volumes/openclaw:/home/node/.openclaw
+      - ./configs/openclaw:/home/node/openclaw-config
+      - ./scripts/openclaw-bootstrap.sh:/opt/agent/openclaw-bootstrap.sh:ro
+    env_file:
+      - ./configs/openclaw/.env
+    command:
+      - /bin/sh
+      - -lc
+      - /opt/agent/openclaw-bootstrap.sh && exec node /app/openclaw.mjs gateway --allow-unconfigured
+    restart: unless-stopped
+    profiles:
+      - full
