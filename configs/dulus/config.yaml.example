@@ -1,0 +1,26 @@
+# Dulus Agent 配置示例
+model:
+  provider: ollama
+  name: qwen2.5-coder:7b
+  api_base: http://localhost:11434/v1
+
+tools:
+  enabled:
+    - read
+    - write
+    - edit
+    - bash
+    - web_search
+    - git
+    - python
+    - mcp
+
+features:
+  voice_input: false
+  auto_commit: true
+  checkpoint: true
+  sub_agents: true
+
+ui:
+  theme: dark
+  stream: true

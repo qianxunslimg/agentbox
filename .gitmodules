@@ -1,0 +1,21 @@
+[submodule "frameworks/openclaw"]
+	path = frameworks/openclaw
+	url = https://github.com/openclaw/openclaw.git
+[submodule "frameworks/dulus"]
+	path = frameworks/dulus
+	url = https://github.com/KevRojo/Dulus.git
+[submodule "frameworks/localagi"]
+	path = frameworks/localagi
+	url = https://github.com/mudler/LocalAGI.git
+[submodule "frameworks/openagentd"]
+	path = frameworks/openagentd
+	url = https://github.com/lthoangg/OpenAgentd.git
+[submodule "frameworks/aider"]
+	path = frameworks/aider
+	url = https://github.com/Aider-AI/aider.git
+[submodule "frameworks/open-webui"]
+	path = frameworks/open-webui
+	url = https://github.com/open-webui/open-webui.git
+[submodule "frameworks/openclaw-cn"]
+	path = frameworks/openclaw-cn
+	url = https://gitee.com/OpenClaw-CN/openclaw-cn.git

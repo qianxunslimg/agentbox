@@ -1,0 +1,24 @@
+{
+  "models": {
+    "default": "ollama/qwen2.5-coder:14b",
+    "fast": "ollama/qwen2.5:1.5b",
+    "reasoning": "ollama/deepseek-r1:14b"
+  },
+  "channels": {
+    "telegram": {
+      "enabled": false,
+      "bot_token": "YOUR_TELEGRAM_BOT_TOKEN"
+    },
+    "discord": {
+      "enabled": false,
+      "bot_token": "YOUR_DISCORD_BOT_TOKEN"
+    }
+  },
+  "skills": {
+    "auto_load": ["coding", "shell", "web-search", "file-management"]
+  },
+  "memory": {
+    "backend": "local",
+    "path": "~/.openclaw/memory"
+  }
+}

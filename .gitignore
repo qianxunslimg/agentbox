@@ -14,10 +14,10 @@ node_modules/
 .env
 .env.local
 *.local
+configs/dulus/config.yaml
 
-# Docker
-docker/data/
-docker/ollama/
+# Docker runtime volumes (databases, state, cache)
+docker/volumes/
 
 # IDE
 .idea/
@@ -36,8 +36,8 @@ Thumbs.db
 .openclaw/
 openclaw.json
 
-# Open WebUI data
-data/
-
 # Local models
 models/
+
+# Local settings
+settings.json

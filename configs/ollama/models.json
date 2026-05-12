@@ -1,0 +1,28 @@
+{
+  "description": "推荐模型列表 - 根据显卡显存选择",
+  "models": {
+    "24GB_vram": {
+      "qwen2.5-coder:32b": "代码能力最强，~18 tok/s",
+      "qwen3.5:35b": "最新平衡之选",
+      "deepseek-r1:32b": "推理能力强",
+      "llama3.3:70b": "通用推理强，需多卡"
+    },
+    "12GB_16GB_vram": {
+      "qwen2.5-coder:14b": "代码首选",
+      "deepseek-r1:14b": "推理+工具调用",
+      "phi-4:14b": "微软出品，效率高"
+    },
+    "8GB_vram": {
+      "qwen2.5-coder:7b": "轻量代码",
+      "deepseek-r1:8b": "轻量推理",
+      "llama3.2:3b": "轻快通用"
+    },
+    "cpu_only": {
+      "qwen2.5:1.5b": "综合最好",
+      "deepseek-r1:1.5b": "推理能力",
+      "llama3.2:1b": "最轻量",
+      "gemma3:1b": "Google 高效小模型"
+    }
+  },
+  "recommended_default": "qwen2.5-coder:7b"
+}

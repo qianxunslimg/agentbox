@@ -1,0 +1,158 @@
+services:
+  # ============================================
+  # Ollama - 本地模型推理引擎
+  # ============================================
+  ollama:
+    image: ollama/ollama:latest
+    container_name: agent-ollama
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ./volumes/ollama:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_HOST=0.0.0.0
+    restart: unless-stopped
+    # GPU: 有 NVIDIA 驱动时取消下面注释
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # ============================================
+  # Open WebUI - 聊天前端（类 ChatGPT）
+  # → http://localhost:3000
+  # ============================================
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: agent-webui
+    ports:
+      - "${WEBUI_HOST:-127.0.0.1}:${WEBUI_PORT:-3000}:8080"
+    volumes:
+      - ./volumes/webui:/app/backend/data
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+      WEBUI_AUTH: ${WEBUI_AUTH:-false}
+      WEBUI_NAME: ${WEBUI_NAME:-Local Agent}
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+  # ============================================
+  # LocalAGI - Agent 无代码构建器
+  # → http://localhost:8080
+  # ============================================
+  localagi:
+    image: quay.io/mudler/localagi:master
+    container_name: agent-localagi
+    ports:
+      - "${LOCALAGI_HOST:-127.0.0.1}:${LOCALAGI_PORT:-8080}:3000"
+    volumes:
+      - ./volumes/localagi:/pool
+    environment:
+      LOCALAGI_MODEL: ${LOCALAGI_MODEL:-qwen2.5-coder:7b}
+      LOCALAGI_MULTIMODAL_MODEL: ${LOCALAGI_MULTIMODAL_MODEL:-qwen2.5-coder:7b}
+      LOCALAGI_LLM_API_URL: http://ollama:11434/v1
+      LOCALAGI_LLM_API_KEY: ollama
+      LOCALAGI_STATE_DIR: /pool
+      LOCALAGI_TIMEOUT: ${LOCALAGI_TIMEOUT:-5m}
+      LOCALAGI_ENABLE_CONVERSATIONS_LOGGING: ${LOCALAGI_ENABLE_CONVERSATIONS_LOGGING:-false}
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    profiles:
+      - full
+      - agent
+
+  # ============================================
+  # OpenAgentd - 多 Agent 协作 OS
+  # → http://localhost:4082
+  # ============================================
+  openagentd:
+    build:
+      context: ../frameworks/openagentd
+      dockerfile: Dockerfile
+    container_name: agent-openagentd
+    ports:
+      - "${OPENAGENTD_HOST:-127.0.0.1}:${OPENAGENTD_PORT:-4082}:4082"
+    volumes:
+      - ./volumes/openagentd:/data
+      - ../configs/openagentd:/data/config
+    environment:
+      APP_ENV: production
+      OLLAMA_BASE_URL: http://ollama:11434/v1
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    profiles:
+      - full
+      - agent
+
+  # ============================================
+  # Aider - AI 结对编程（CLI）
+  #   bash scripts/start-aider.sh [工作目录]
+  # ============================================
+  aider:
+    build:
+      context: ../frameworks/aider
+      dockerfile_inline: |
+        FROM python:3.12-slim
+        WORKDIR /app
+        COPY . .
+        RUN SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+docker pip install --no-cache-dir -e .
+        ENTRYPOINT ["aider"]
+    image: agentbox/aider:local
+    environment:
+      OLLAMA_API_BASE: http://ollama:11434
+    stdin_open: true
+    tty: true
+    profiles:
+      - cli
+
+  # ============================================
+  # Dulus - CLI Agent（类 Claude Code）
+  #   bash scripts/start-dulus.sh [工作目录]
+  # ============================================
+  dulus:
+    build:
+      context: ../frameworks/dulus
+      dockerfile_inline: |
+        FROM python:3.12-slim
+        WORKDIR /app
+        COPY . .
+        RUN SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+docker pip install --no-cache-dir -e .
+        ENTRYPOINT ["dulus"]
+    image: agentbox/dulus:local
+    environment:
+      OLLAMA_HOST: ollama:11434
+    stdin_open: true
+    tty: true
+    profiles:
+      - cli
+
+  # ============================================
+  # OpenClaw - 通用 AI 助手（多平台消息）
+  #   bash scripts/start-openclaw.sh
+  # ============================================
+  openclaw:
+    build:
+      context: ../frameworks/openclaw
+      dockerfile: Dockerfile
+    image: agentbox/openclaw:local
+    container_name: agent-openclaw
+    ports:
+      - "127.0.0.1:18789:18789"
+    volumes:
+      - ../configs/openclaw/openclaw.json:/home/node/.openclaw/openclaw.json:ro
+      - ./volumes/openclaw:/home/node/.openclaw
+    environment:
+      OLLAMA_API_KEY: ollama-local
+      OPENCLAW_GATEWAY_TOKEN: demo-token-not-for-production
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    profiles:
+      - full
